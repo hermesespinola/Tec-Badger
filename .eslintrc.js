@@ -9,11 +9,14 @@ module.exports = {
     "jest"
   ],
   "rules": {
+    "indent": ["warn", 2],
+    "semi": ["warn", "never"],
     "prettier/prettier": [
       "warn",
       {
         "singleQuote": true,
         "trailingComma": "all",
+        "semi": false,
       }
     ],
     "react/jsx-closing-bracket-location": "off",
