@@ -19,6 +19,7 @@ module.exports = {
         "semi": false,
       }
     ],
+    "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
     "react/jsx-closing-bracket-location": "off",
     "react/jsx-closing-tag-location": "off",
     "react/jsx-curly-spacing": "off",
