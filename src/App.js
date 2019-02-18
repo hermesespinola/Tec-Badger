@@ -8,14 +8,10 @@
  */
 
 import React from 'react'
-import { Platform, StyleSheet, Text, View } from 'react-native'
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\nCmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-})
+import { StyleSheet, View } from 'react-native'
+import { Router, Scene } from 'react-native-router-flux'
+import Login from './components/presentational/Login'
+import Feed from './components/presentational/Feed'
 
 const styles = StyleSheet.create({
   container: {
@@ -37,9 +33,16 @@ const styles = StyleSheet.create({
 })
 
 export default () => (
-  <View style={styles.container}>
-    <Text style={styles.welcome}>Welcome to React Native!</Text>
-    <Text style={styles.instructions}>To get started, edit App.js</Text>
-    <Text style={styles.instructions}>{instructions}</Text>
-  </View>
+  <Router>
+    <Scene key="root">
+      <Scene
+        key="loginScreen"
+        component={Login}
+        animation="fade"
+        hideNavBar
+        initial
+      />
+      <Scene key="feedScreen" component={Feed} animation="fade" hideNavBar />
+    </Scene>
+  </Router>
 )
