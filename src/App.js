@@ -8,7 +8,7 @@
  */
 
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { Router, Scene } from 'react-native-router-flux'
 import Login from './components/presentational/Login'
 import Feed from './components/presentational/Feed'
