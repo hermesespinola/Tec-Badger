@@ -1,11 +1,14 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Picker } from 'react-native'
+import { inject, PropTypes } from 'mobx-react'
 import {
   GoogleSignin,
   GoogleSigninButton,
   statusCodes,
 } from 'react-native-google-signin'
+import { Actions } from 'react-native-router-flux'
+import { getUser, createUser } from '../../../api'
 
 const styles = StyleSheet.create({
   container: {
@@ -16,13 +19,13 @@ const styles = StyleSheet.create({
   },
 })
 
+// TODO: unhardcode this
 const webClientId =
   '601145109828-hlehjvdklr96409p1kle7ctkmnevpt2n.apps.googleusercontent.com'
-
+@inject('user')
 class LoginScreen extends PureComponent {
   state = {
     isSigninInProgress: false,
-    /* userInfo: null, */
   }
 
   componentDidMount() {
@@ -43,9 +46,19 @@ class LoginScreen extends PureComponent {
         showPlayServicesUpdateDialog: true,
       })
       const userInfo = await GoogleSignin.signIn()
-      console.log(userInfo)
 
-      // this.setState({ userInfo })
+      // try getting user from server
+      // TODO: better error handling
+      const { user } = this.props
+      try {
+        user.setUser(await getUser(userInfo))
+      } catch (err) {
+        user.setUser(await createUser(userInfo))
+      }
+      console.log(user)
+      // Successful login, redirect to feed
+      // TODO: redirect to feed instead of profile
+      Actions.popAndPush('Profile')
     } catch (error) {
       this.setState({ isSigninInProgress: false })
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -65,7 +78,7 @@ class LoginScreen extends PureComponent {
     return (
       <View style={styles.container}>
         <GoogleSigninButton
-          style={{ width: 312, height: 48 }}
+          style={{ width: 264, height: 48 }}
           size={GoogleSigninButton.Size.Wide}
           color={GoogleSigninButton.Color.Dark}
           onPress={this.signIn}
@@ -74,6 +87,10 @@ class LoginScreen extends PureComponent {
       </View>
     )
   }
+}
+
+LoginScreen.propTypes = {
+  user: PropTypes.objectOrObservableObject.isRequired,
 }
 
 export default LoginScreen

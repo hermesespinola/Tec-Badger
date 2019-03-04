@@ -10,6 +10,8 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { Router, Scene } from 'react-native-router-flux'
+import { Provider } from 'mobx-react'
+import { badgeStore, user } from './state'
 import Login from './components/presentational/Login'
 import Feed from './components/presentational/Feed'
 
@@ -33,16 +35,18 @@ const styles = StyleSheet.create({
 })
 
 export default () => (
-  <Router>
-    <Scene key="root">
-      <Scene
-        key="loginScreen"
-        component={Login}
-        animation="fade"
-        hideNavBar
-        initial
-      />
-      <Scene key="feedScreen" component={Feed} animation="fade" hideNavBar />
-    </Scene>
-  </Router>
+  <Provider badgeStore={badgeStore} user={user}>
+    <Router>
+      <Scene key="root">
+        <Scene
+          key="loginScreen"
+          component={Login}
+          animation="fade"
+          hideNavBar
+          initial
+        />
+        <Scene key="feedScreen" component={Feed} animation="fade" hideNavBar />
+      </Scene>
+    </Router>
+  </Provider>
 )
