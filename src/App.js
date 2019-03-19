@@ -7,6 +7,7 @@
  * @lint-ignore-every XPLATJSCOPYRIGHT1
  */
 
+import 'core-js/es6/symbol'
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { Router, Scene } from 'react-native-router-flux'
@@ -14,6 +15,7 @@ import { Provider } from 'mobx-react'
 import { badgeStore, user } from './state'
 import Login from './components/presentational/Login'
 import Feed from './components/presentational/Feed'
+import Profile from './components/presentational/Profile'
 
 const styles = StyleSheet.create({
   container: {
@@ -45,7 +47,8 @@ export default () => (
           hideNavBar
           initial
         />
-        <Scene key="feedScreen" component={Feed} animation="fade" hideNavBar />
+        <Scene key="feedScreen" component={Feed} animation="fade" />
+        <Scene key="profileScreen" component={Profile} animation="fade" />
       </Scene>
     </Router>
   </Provider>

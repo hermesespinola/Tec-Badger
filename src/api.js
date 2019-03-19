@@ -1,25 +1,39 @@
+import { API_URL } from 'react-native-dotenv'
+
 const getStudentId = ({ user }) => user.email.split('@', 1)[0]
 
-// TODO: unhardcode this
 export const getUser = async userInfo => {
   const studentId = getStudentId(userInfo)
-  const res = await fetch(`127.0.0.1:3000/users/${studentId}`, {
+  const res = await fetch(`${API_URL}/users/${studentId}`, {
     method: 'GET',
     headers: { Auth: `Bearer ${userInfo.accessToken}` },
   })
-  return res.json()
+  if (res.ok) {
+    return res.json()
+  } else {
+    return res.text()
+  }
 }
 
 export const createUser = async userInfo => {
   const studentId = getStudentId(userInfo)
-  await fetch(`127.0.0.1:3000/users`, {
+  const { degree } = userInfo
+
+  const res = await fetch(`${API_URL}/users`, {
     method: 'POST',
-    headers: { Auth: `Bearer ${userInfo.accessToken}` },
-    body: {
-      user: {
-        ...user,
-        studentId,
-      },
+    headers: {
+      Auth: `Bearer ${userInfo.idToken}`,
+      'Content-Type': 'application/json; charset=utf-8',
     },
+    body: JSON.stringify({
+      ...userInfo.user,
+      studentId,
+      degree,
+    }),
   })
+  if (res.ok) {
+    return res.json()
+  } else {
+    return res.text()
+  }
 }

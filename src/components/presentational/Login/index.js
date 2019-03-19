@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react'
-import { StyleSheet, View, Picker } from 'react-native'
+import { StyleSheet, View, Picker, Text, ToastAndroid } from 'react-native'
 import { inject, PropTypes } from 'mobx-react'
+import { WEBCLIENT_ID } from 'react-native-dotenv'
 import {
   GoogleSignin,
   GoogleSigninButton,
@@ -9,6 +10,7 @@ import {
 } from 'react-native-google-signin'
 import { Actions } from 'react-native-router-flux'
 import { getUser, createUser } from '../../../api'
+import { degrees } from '../../../types'
 
 const styles = StyleSheet.create({
   container: {
@@ -19,20 +21,18 @@ const styles = StyleSheet.create({
   },
 })
 
-// TODO: unhardcode this
-const webClientId =
-  '601145109828-hlehjvdklr96409p1kle7ctkmnevpt2n.apps.googleusercontent.com'
 @inject('user')
 class LoginScreen extends PureComponent {
   state = {
     isSigninInProgress: false,
+    degree: degrees[0],
   }
 
   componentDidMount() {
     GoogleSignin.configure({
       scopes: ['https://www.googleapis.com/auth/drive.readonly'],
       hostedDomain: 'itesm.mx',
-      webClientId,
+      webClientId: WEBCLIENT_ID,
     })
   }
 
@@ -48,17 +48,23 @@ class LoginScreen extends PureComponent {
       const userInfo = await GoogleSignin.signIn()
 
       // try getting user from server
-      // TODO: better error handling
       const { user } = this.props
+      const { degree } = this.state
       try {
         user.setUser(await getUser(userInfo))
-      } catch (err) {
-        user.setUser(await createUser(userInfo))
+      } catch {
+        const user = await createUser({ degree, ...userInfo })
+        if (typeof user === 'object') {
+          user.setUser(user)
+        } else {
+          ToastAndroid.show('Could not create user, please try later', ToastAndroid.SHORT)
+          console.error('could not create user')
+        }
       }
-      console.log(user)
+
       // Successful login, redirect to feed
       // TODO: redirect to feed instead of profile
-      Actions.popAndPush('Profile')
+      Actions.popAndPush('profileScreen')
     } catch (error) {
       this.setState({ isSigninInProgress: false })
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -67,16 +73,35 @@ class LoginScreen extends PureComponent {
         console.log('Signing In')
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         console.log('Play Services Not Available or Outdated')
+        ToastAndroid.show('Play Services not available or outdated', ToastAndroid.SHORT)
       } else {
         console.log('Some Other Error Happened')
+        console.error(error)
+        ToastAndroid.show(error.message, ToastAndroid.LONG)
       }
     }
   }
 
+  updateDegree = degree => {
+    this.setState({ degree })
+  }
+
   render() {
-    const { isSigninInProgress } = this.state
+    const { isSigninInProgress, degree } = this.state
     return (
       <View style={styles.container}>
+        <View>
+          <Text>Please Select your major</Text>
+          <Picker selectedValue={degree} onValueChange={this.updateDegree}>
+            {degrees.map((degree, i) => (
+              <Picker.Item
+                label={degree}
+                value={degree}
+                key={`degree-select-${i}`}
+              />
+            ))}
+          </Picker>
+        </View>
         <GoogleSigninButton
           style={{ width: 264, height: 48 }}
           size={GoogleSigninButton.Size.Wide}
