@@ -1,6 +1,15 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react'
-import { StyleSheet, View, Picker, Text, ToastAndroid } from 'react-native'
+import {
+  StyleSheet,
+  View,
+  Picker,
+  Text,
+  ToastAndroid,
+  AsyncStorage,
+  ActivityIndicator,
+  StatusBar,
+} from 'react-native'
 import { inject, PropTypes } from 'mobx-react'
 import { WEBCLIENT_ID } from 'react-native-dotenv'
 import {
@@ -8,7 +17,6 @@ import {
   GoogleSigninButton,
   statusCodes,
 } from 'react-native-google-signin'
-import { Actions } from 'react-native-router-flux'
 import { getUser, createUser } from '../../../api'
 import { degrees } from '../../../types'
 
@@ -23,6 +31,10 @@ const styles = StyleSheet.create({
 
 @inject('user')
 class LoginScreen extends PureComponent {
+  static navigationOptions = {
+    title: 'Tec Badger',
+  }
+
   state = {
     isSigninInProgress: false,
     degree: degrees[0],
@@ -52,6 +64,8 @@ class LoginScreen extends PureComponent {
       const { degree } = this.state
       try {
         user.setUser(await getUser(userInfo))
+        AsyncStorage.setItem('idToken', userInfo.idToken)
+        AsyncStorage.setItem('email', userInfo.user.email)
       } catch {
         const user = await createUser({ degree, ...userInfo })
         if (typeof user === 'object') {
@@ -64,7 +78,7 @@ class LoginScreen extends PureComponent {
 
       // Successful login, redirect to feed
       // TODO: redirect to feed instead of profile
-      Actions.popAndPush('profileScreen')
+      this.props.navigation.navigate('Profile')
     } catch (error) {
       this.setState({ isSigninInProgress: false })
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -91,6 +105,12 @@ class LoginScreen extends PureComponent {
     return (
       <View style={styles.container}>
         <View>
+          {isSigninInProgress && (
+            <View>
+              <ActivityIndicator />
+              <StatusBar barStyle="default" />
+          </View>
+          )}
           <Text>Please Select your major</Text>
           <Picker selectedValue={degree} onValueChange={this.updateDegree}>
             {degrees.map((degree, i) => (

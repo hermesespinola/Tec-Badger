@@ -6,7 +6,7 @@ export const getUser = async userInfo => {
   const studentId = getStudentId(userInfo)
   const res = await fetch(`${API_URL}/users/${studentId}`, {
     method: 'GET',
-    headers: { Auth: `Bearer ${userInfo.accessToken}` },
+    headers: { Auth: `Bearer ${userInfo.idToken}` },
   })
   if (res.ok) {
     return res.json()

@@ -4,13 +4,13 @@ import { IUserInfo, degrees } from '../types'
 
 const User = types
   .model('User', {
-    id: types.maybeNull(types.string),
-    name: types.maybeNull(types.string),
+    studentId: types.string,
+    name: types.string,
     degree: types.maybeNull(types.enumeration('degree', degrees)),
-    email: types.maybeNull(types.string),
-    photo: types.maybeNull(types.string),
-    familyName: types.maybeNull(types.string),
-    givenName: types.maybeNull(types.string),
+    email: types.string,
+    photo: types.string,
+    familyName: types.string,
+    givenName: types.string,
   })
   .actions(self => ({
     setUser({
@@ -36,12 +36,13 @@ const User = types
   }))
 
 const user = User.create({
-  studentId: null,
-  name: null,
-  email: null,
-  photo: null,
-  familyName: null,
-  givenName: null,
+  studentId: '',
+  name: '',
+  degree: null,
+  email: '',
+  photo: '',
+  familyName: '',
+  givenName: '',
 })
 
 export { User, user, user as default }
