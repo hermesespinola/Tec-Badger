@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react'
 import { View, Text, Image, StyleSheet } from 'react-native'
 import { inject, PropTypes } from 'mobx-react'
 import commonStyles from '../../styles/common'
+import { FlatList } from 'react-native-gesture-handler'
+import { IBadge } from '../../types'
 
 const headerStyles = StyleSheet.create({
   container: {
@@ -35,6 +37,19 @@ const headerStyles = StyleSheet.create({
   },
 })
 
+const badgesStyles = StyleSheet.create({
+  badgeListItemContainer: {
+    backgroundColor: commonStyles.colorSecondary,
+    flex: 1,
+    flexDirection: 'row',
+  },
+  badgeImage: {
+    borderRadius: 100,
+    height: 80,
+    width: 80,
+  },
+})
+
 const ProfileHeader = ({ user }) => (
   <View style={headerStyles.container}>
     <Image style={headerStyles.photo} source={{ uri: user.photo || commonStyles.defaultProfileImage }} />
@@ -44,6 +59,32 @@ const ProfileHeader = ({ user }) => (
       <Text style={headerStyles.subtitleBlack}>1,377</Text>
       <Text style={headerStyles.subtitle}>Badges</Text>
     </View>
+  </View>
+)
+
+const renderBadgeListItem = ({ item: badge, index }) => (
+  <View key={`badge-${index}`}>
+    <Image style={badgesStyles.badgeImage} source={{ uri: badge.imageURL || commonStyles.defaultBadgeImage }} />
+    <View>
+      <Text>{badge.name}</Text>
+      <Text>{badge.description}</Text>
+    </View>
+  </View>
+)
+
+const BadgeListItemSeparator = () => (
+  <View
+    style={{
+      height: 1,
+      width: "100%",
+      backgroundColor: "#CED0CE",
+    }}
+  />
+)
+
+const EmptyBadgeList = (
+  <View>
+    <Text>You have no badges :(</Text>
   </View>
 )
 
@@ -65,10 +106,17 @@ class Profile extends PureComponent {
 
   render() {
     const { user } = this.props
-    console.log(user)
     return (
       <View>
         <ProfileHeader user={user} />
+        <View>
+          <FlatList
+            data={user.badges}
+            renderItem={renderBadgeListItem}
+            ListEmptyComponent={EmptyBadgeList}
+            ItemSeparatorComponent={BadgeListItemSeparator}
+          />
+        </View>
       </View>
     )
   }

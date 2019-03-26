@@ -1,10 +1,12 @@
 /* eslint-disable no-param-reassign */
 import { types } from 'mobx-state-tree'
+import { Badge } from './Badge'
 import { IUserInfo, degrees } from '../types'
 
 const User = types
   .model('User', {
     studentId: types.string,
+    badges: types.array(Badge),
     name: types.string,
     degree: types.maybeNull(types.enumeration('degree', degrees)),
     email: types.string,
@@ -15,6 +17,7 @@ const User = types
   .actions(self => ({
     setUser({
       studentId,
+      badges,
       name,
       email,
       photo,
@@ -26,6 +29,7 @@ const User = types
         throw new Error('User studentId should not be empty and contain 9 characters')
       }
       self.studentId = studentId
+      self.badges = badges
       self.name = name
       self.email = email
       self.photo = photo
@@ -37,6 +41,7 @@ const User = types
 
 const user = User.create({
   studentId: '',
+  badges: [],
   name: '',
   degree: null,
   email: '',

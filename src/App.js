@@ -19,26 +19,6 @@ import Feed from './components/presentational/Feed'
 import Profile from './components/presentational/Profile'
 import commonStyles from './styles/common';
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-})
-
 const AppNavigator = createStackNavigator({ AuthLoading, Login, Profile, Feed }, {
   initialRouteName: 'AuthLoading',
   defaultNavigationOptions: {

@@ -8,6 +8,7 @@ const commonStyles = {
   colorTextLink: '#00BCD4',
   profileHeaderColor: '#5b9ce8',
   defaultProfileImage: 'https://www.underconsideration.com/brandnew/archives/tec_monterrey_logo_icon_detail.png',
+  defaultBadgeImage: 'https://www.underconsideration.com/brandnew/archives/tec_monterrey_logo_icon_detail.png',
 }
 
 export default commonStyles

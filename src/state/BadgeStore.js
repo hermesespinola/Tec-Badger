@@ -29,13 +29,7 @@ const BadgeStore = types
   }))
 
 const badgeStore = BadgeStore.create({
-  badges: [
-    {
-      name: 'Sample Badge',
-      description: 'This is a sample badge',
-      imageURL: 'www.google.com',
-    },
-  ],
+  badges: [],
 })
 
 export { BadgeStore, badgeStore }
