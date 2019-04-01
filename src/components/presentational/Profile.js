@@ -38,8 +38,14 @@ const headerStyles = StyleSheet.create({
 })
 
 const badgesStyles = StyleSheet.create({
+  noBadges: {
+    flex: 1,
+    alignSelf: 'stretch',
+    textAlign: 'center',
+  },
   badgeListItemContainer: {
-    backgroundColor: commonStyles.colorSecondary,
+    padding: 10,
+    backgroundColor: '#eff2f7',
     flex: 1,
     flexDirection: 'row',
   },
@@ -47,6 +53,16 @@ const badgesStyles = StyleSheet.create({
     borderRadius: 100,
     height: 80,
     width: 80,
+  },
+  badgeListItemContent: {
+    paddingLeft: 10,
+  },
+  badgeDescription: {
+    color: commonStyles.colorTextLight,
+  },
+  badgeName: {
+    color: commonStyles.colorText,
+    fontSize: 16,
   },
 })
 
@@ -63,11 +79,11 @@ const ProfileHeader = ({ user }) => (
 )
 
 const renderBadgeListItem = ({ item: badge, index }) => (
-  <View key={`badge-${index}`}>
+  <View style={badgesStyles.badgeListItemContainer} key={`badge-${index}`}>
     <Image style={badgesStyles.badgeImage} source={{ uri: badge.imageURL || commonStyles.defaultBadgeImage }} />
-    <View>
-      <Text>{badge.name}</Text>
-      <Text>{badge.description}</Text>
+    <View style={badgesStyles.badgeListItemContent}>
+      <Text style={badgesStyles.badgeName}>{badge.name}</Text>
+      <Text style={badgesStyles.badgeDescription}>{badge.description}</Text>
     </View>
   </View>
 )
@@ -83,7 +99,7 @@ const BadgeListItemSeparator = () => (
 )
 
 const EmptyBadgeList = (
-  <View>
+  <View style={badgesStyles.noBadges}>
     <Text>You have no badges :(</Text>
   </View>
 )
